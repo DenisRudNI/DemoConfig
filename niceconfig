@@ -1,0 +1,48 @@
+ipsec.conf
+config setup
+#	listen=x.x.x.x/x
+config	vpn
+	auto=start
+	authby=secret
+	type=tunnel
+	ike=aes128-sha2;dh14
+	ike2=no
+	phasese2=esp
+	pfs=no
+	encasulation=yes
+	leftsubnet=0.0.0.0/0
+	rightsubnet=0.0.0.0/0
+	left=x.x.x.x/x
+	right=x.x.x.x/x
+	leftid=x.x.x.x/x
+	rightid=x.x.x.x/x
+	mark=5/0xffffffff
+	vri-interface=vti01
+	vti-routing=no
+	vty-shared=yes
+	leftvti=192.168.20.1/30
+	rightvti=192.168.20.2/30
+ipsec.secrets/test.secrets
+%any %any : PSK "Passw0rd#123"
+bind/name.conf.default-zones
+zone "demo.wsr"
+{
+type master;
+allow-transfer {any;};
+file "/opt/dns/demo.db";
+};
+bind/name.conf.options
+forwarders {
+208.67.222.222;
+};
+demo.db
+@	IN	SOA	demo.wsr. root.localhost
+
+@	IN	NS	isp.demo.wsr.
+isp	IN	A	11.111.0.48
+www	IN	A	4.4.4.100
+www	IN	A	5.5.5.100
+internet	IN	CNAME	isp.demo.wsr.
+int	IN	NS	RTR-L.demo.wsr.
+RTR-L	IN	A	4.4.4.100
+RTR-R	IN	A	5.5.5.5
